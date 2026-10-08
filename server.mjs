@@ -12,8 +12,8 @@ const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
-  const safe = normalize(pathname).replace(/^([.][.][/\\])+/, '');
-  let file = join(root, safe);
+  const safe = normalize(pathname).replace(/^([.][.][/\\])+/, '').replace(/^[/\\]+/, '');
+  let file = pathname === '/manus-routes.json' ? join(root, 'public', 'manus-routes.json') : join(root, safe);
   if (!existsSync(file)) file = join(root, 'index.html');
   try {
     const data = await readFile(file);
