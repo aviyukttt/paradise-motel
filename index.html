@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#100e0d" />
+  <meta name="description" content="Paradise Motel — a cinematic Lana Del Rey record room." />
+  <title>Paradise Motel — Lana Del Rey Record Room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="light-orb orb-a" aria-hidden="true"></div>
+  <div class="light-orb orb-b" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <a class="wordmark" href="#top" aria-label="Paradise Motel home"><span></span>PARADISE MOTEL</a>
+    <div class="masthead-note">A PRIVATE LISTENING ROOM <b>·</b> 1966 — 2026</div>
+    <button class="about-button" id="aboutButton" type="button">ABOUT <span>↗</span></button>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-copy reveal-up">
+        <p class="eyebrow">LANA DEL REY / THE COMPLETE ROOM</p>
+        <h1 id="heroTitle">Choose a side<br />of the <em>night.</em></h1>
+        <p class="intro">A slow, golden archive of songs for driving nowhere, remembering everything.</p>
+        <button class="scroll-cue" id="scrollCue" type="button"><span class="scroll-dot"></span> EXPLORE THE SHELVES</button>
+      </div>
+
+      <div class="player-stage" aria-label="Interactive record player">
+        <div class="stage-label label-left">NOW TUNING IN <span id="stageStatus">STANDBY</span></div>
+        <div class="player-shadow" aria-hidden="true"></div>
+        <div class="turntable">
+          <div class="player-lid"></div>
+          <div class="player-body">
+            <div class="player-inset">
+              <div class="platter"><div class="groove"></div><div class="record" id="record"><div class="record-label"><span>PM</span></div><div class="record-hole"></div></div></div>
+              <div class="needle-arm" id="needleArm"><div class="needle-base"></div><div class="needle-stick"></div><div class="needle-head"></div></div>
+            </div>
+            <div class="player-controls"><span class="control-led"></span><span class="player-name">PARADISE / 01</span><span class="player-lines">— — —</span></div>
+          </div>
+        </div>
+        <div class="stage-label label-right">VOL. <span id="volumeReadout">72</span> <span class="volume-bars">▮▮▮▮▯</span></div>
+        <div class="disc-flight" id="discFlight" aria-hidden="true"><div class="mini-disc"><div></div></div></div>
+      </div>
+
+      <aside class="now-playing glass-panel" aria-live="polite">
+        <div class="now-art" id="nowArt">PM</div>
+        <div class="now-meta"><span class="tiny-label" id="nowAlbum">PARADISE MOTEL</span><h2 id="nowTitle">The needle is waiting.</h2><p id="nowArtist">Select a record below to begin</p><a class="stream-link" id="streamLink" href="https://open.spotify.com/search/Lana%20Del%20Rey" target="_blank" rel="noreferrer">OPEN OFFICIAL STREAM ↗</a></div>
+        <div class="now-state"><span class="pulse-dot" id="pulseDot"></span><span id="nowState">READY</span></div>
+        <div class="playback-panel">
+          <div class="progress-row"><span id="elapsed">0:00</span><input id="progress" type="range" min="0" max="100" value="0" aria-label="Seek within selected song" /><span>3:48</span></div>
+          <div class="transport-row"><button id="prevButton" class="transport" type="button" aria-label="Previous song">◀◀</button><button id="playButton" class="play-button" type="button" aria-label="Play selected song">▶</button><button id="nextButton" class="transport" type="button" aria-label="Next song">▶▶</button><label class="volume-control" for="volume">VOL <input id="volume" type="range" min="0" max="100" value="72" aria-label="Volume" /></label></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="shelves" id="shelves" aria-labelledby="shelvesTitle">
+      <div class="section-heading reveal-up"><div><p class="eyebrow">THE RECORD SHELVES</p><h2 id="shelvesTitle">Every era,<br /><em>one room.</em></h2></div><p class="shelf-caption">Browse the official-release catalog.<br />Each selection sets the room in motion.</p></div>
+      <div class="filter-row" role="toolbar" aria-label="Filter by album"><button class="filter active" data-filter="All" type="button">ALL RELEASES <span id="allCount"></span></button><div class="filter-scroll" id="filters"></div></div>
+      <div class="catalog" id="catalog" aria-live="polite"></div>
+    </section>
+
+    <section class="liner-notes reveal-up" aria-label="Listening note"><div class="line"></div><p>“I believe in the kindness of strangers.”</p><span>— LANA DEL REY</span><div class="line"></div></section>
+  </main>
+
+  <footer><span>PARADISE MOTEL / CURATED AFTER DARK</span><span>USE HEADPHONES IF YOU CAN</span><a href="https://open.spotify.com/search/Lana%20Del%20Rey" target="_blank" rel="noreferrer">OPEN SPOTIFY ↗</a></footer>
+
+  <dialog class="about-modal" id="aboutModal"><button class="modal-close" id="closeModal" type="button" aria-label="Close about dialog">×</button><p class="eyebrow">A NOTE FROM THE MOTEL</p><h2>A room for the songs that stay.</h2><p>Paradise Motel is an interactive listening room for Lana Del Rey’s official-release catalog. Pick a record, watch it find the player, and continue the journey on the official streaming service.</p><p class="legal-note">This site provides song metadata and official listening links. It does not host or redistribute copyrighted recordings.</p></dialog>
+
+  <script>
+    const tracks = [
+      ['Video Games','Born to Die','2012','01'],['Born to Die','Born to Die','2012','02'],['Blue Jeans','Born to Die','2012','03'],['Off to the Races','Born to Die','2012','04'],['National Anthem','Born to Die','2012','05'],['Dark Paradise','Born to Die','2012','06'],['Radio','Born to Die','2012','07'],['Carmen','Born to Die','2012','08'],['Million Dollar Man','Born to Die','2012','09'],['Summertime Sadness','Born to Die','2012','10'],['This Is What Makes Us Girls','Born to Die','2012','11'],
+      ['Ride','Paradise','2012','01'],['American','Paradise','2012','02'],['Cola','Paradise','2012','03'],['Body Electric','Paradise','2012','04'],['Blue Velvet','Paradise','2012','05'],['Gods & Monsters','Paradise','2012','06'],['Yayo','Paradise','2012','07'],['Bel Air','Paradise','2012','08'],
+      ['Cruel World','Ultraviolence','2014','01'],['Ultraviolence','Ultraviolence','2014','02'],['Shades of Cool','Ultraviolence','2014','03'],['Brooklyn Baby','Ultraviolence','2014','04'],['West Coast','Ultraviolence','2014','05'],['Sad Girl','Ultraviolence','2014','06'],['Pretty When You Cry','Ultraviolence','2014','07'],['Money Power Glory','Ultraviolence','2014','08'],['Fucked My Way Up to the Top','Ultraviolence','2014','09'],['Old Money','Ultraviolence','2014','10'],['The Other Woman','Ultraviolence','2014','11'],
+      ['Honeymoon','Honeymoon','2015','01'],['Music to Watch Boys To','Honeymoon','2015','02'],['Terrence Loves You','Honeymoon','2015','03'],['God Knows I Tried','Honeymoon','2015','04'],['High by the Beach','Honeymoon','2015','05'],['Freak','Honeymoon','2015','06'],['Art Deco','Honeymoon','2015','07'],['Burnt Norton (Interlude)','Honeymoon','2015','08'],['Salvatore','Honeymoon','2015','09'],['The Blackest Day','Honeymoon','2015','10'],['24','Honeymoon','2015','11'],['Swan Song','Honeymoon','2015','12'],['Don’t Let Me Be Misunderstood','Honeymoon','2015','13'],
+      ['Love','Lust for Life','2017','01'],['Lust for Life','Lust for Life','2017','02'],['13 Beaches','Lust for Life','2017','03'],['Cherry','Lust for Life','2017','04'],['White Mustang','Lust for Life','2017','05'],['Summer Bummer','Lust for Life','2017','06'],['Groupie Love','Lust for Life','2017','07'],['In My Feelings','Lust for Life','2017','08'],['Coachella – Woodstock in My Mind','Lust for Life','2017','09'],['God Bless America – And All the Beautiful Women in It','Lust for Life','2017','10'],['When the World Was at War We Kept Dancing','Lust for Life','2017','11'],['Beautiful People Beautiful Problems','Lust for Life','2017','12'],['Tomorrow Never Came','Lust for Life','2017','13'],['Heroin','Lust for Life','2017','14'],['Change','Lust for Life','2017','15'],['Get Free','Lust for Life','2017','16'],
+      ['Mariners Apartment Complex','Norman F***ing Rockwell!','2019','01'],['Venice Bitch','Norman F***ing Rockwell!','2019','02'],['Fuck It I Love You','Norman F***ing Rockwell!','2019','03'],['Doin’ Time','Norman F***ing Rockwell!','2019','04'],['Love Song','Norman F***ing Rockwell!','2019','05'],['Cinnamon Girl','Norman F***ing Rockwell!','2019','06'],['How to Disappear','Norman F***ing Rockwell!','2019','07'],['California','Norman F***ing Rockwell!','2019','08'],['The Next Best American Record','Norman F***ing Rockwell!','2019','09'],['The greatest','Norman F***ing Rockwell!','2019','10'],['Bartender','Norman F***ing Rockwell!','2019','11'],['Happiness is a butterfly','Norman F***ing Rockwell!','2019','12'],['hope is a dangerous thing for a woman like me to have – but I have it','Norman F***ing Rockwell!','2019','13'],
+      ['White Dress','Chemtrails over the Country Club','2021','01'],['Chemtrails over the Country Club','Chemtrails over the Country Club','2021','02'],['Tulsa Jesus Freak','Chemtrails over the Country Club','2021','03'],['Let Me Love You Like a Woman','Chemtrails over the Country Club','2021','04'],['Wild at Heart','Chemtrails over the Country Club','2021','05'],['Dark But Just a Game','Chemtrails over the Country Club','2021','06'],['Not All Who Wander Are Lost','Chemtrails over the Country Club','2021','07'],['Yosemite','Chemtrails over the Country Club','2021','08'],['Breaking Up Slowly','Chemtrails over the Country Club','2021','09'],['Dance Till We Die','Chemtrails over the Country Club','2021','10'],['For Free','Chemtrails over the Country Club','2021','11'],
+      ['Text Book','Blue Banisters','2021','01'],['Blue Banisters','Blue Banisters','2021','02'],['Arcadia','Blue Banisters','2021','03'],['Interlude – The Trio','Blue Banisters','2021','04'],['Black Bathing Suit','Blue Banisters','2021','05'],['If You Lie Down with Me','Blue Banisters','2021','06'],['Beautiful','Blue Banisters','2021','07'],['Violets for Roses','Blue Banisters','2021','08'],['Dealer','Blue Banisters','2021','09'],['Thunder','Blue Banisters','2021','10'],['Wildflower Wildfire','Blue Banisters','2021','11'],['Nectar of the Gods','Blue Banisters','2021','12'],['Living Legend','Blue Banisters','2021','13'],['Cherry Blossom','Blue Banisters','2021','14'],['Sweet Carolina','Blue Banisters','2021','15'],
+      ['The Grants','Did you know that there’s a tunnel under Ocean Blvd','2023','01'],['Did you know that there’s a tunnel under Ocean Blvd','Did you know that there’s a tunnel under Ocean Blvd','2023','02'],['Sweet','Did you know that there’s a tunnel under Ocean Blvd','2023','03'],['A&W','Did you know that there’s a tunnel under Ocean Blvd','2023','04'],['Judah Smith Interlude','Did you know that there’s a tunnel under Ocean Blvd','2023','05'],['Candy Necklace','Did you know that there’s a tunnel under Ocean Blvd','2023','06'],['Jon Batiste Interlude','Did you know that there’s a tunnel under Ocean Blvd','2023','07'],['Kintsugi','Did you know that there’s a tunnel under Ocean Blvd','2023','08'],['Fingertips','Did you know that there’s a tunnel under Ocean Blvd','2023','09'],['Paris, Texas','Did you know that there’s a tunnel under Ocean Blvd','2023','10'],['Grandfather please stand on the shoulders of my father while he’s deep-sea fishing','Did you know that there’s a tunnel under Ocean Blvd','2023','11'],['Let The Light In','Did you know that there’s a tunnel under Ocean Blvd','2023','12'],['Margaret','Did you know that there’s a tunnel under Ocean Blvd','2023','13'],['Fishtail','Did you know that there’s a tunnel under Ocean Blvd','2023','14'],['Peppers','Did you know that there’s a tunnel under Ocean Blvd','2023','15'],['Taco Truck x VB','Did you know that there’s a tunnel under Ocean Blvd','2023','16']
+    ].map((t, i) => ({title:t[0], album:t[1], year:t[2], no:t[3], id:i}));
+
+    const state = { index: 0, playing: false, progress: 0, volume: 72, timer: null, filter: 'All' };
+    const $ = s => document.querySelector(s);
+    const filters = [...new Set(tracks.map(t => t.album))];
+    $('#allCount').textContent = tracks.length;
+    $('#filters').innerHTML = filters.map(a => `<button class="filter" data-filter="${a}" type="button">${a.toUpperCase()}</button>`).join('');
+
+    function filteredTracks() { return state.filter === 'All' ? tracks : tracks.filter(t => t.album === state.filter); }
+    function paintCatalog() {
+      const list = filteredTracks();
+      $('#catalog').innerHTML = list.map((t, i) => `<button class="track-card ${tracks[state.index].id === t.id ? 'selected' : ''}" data-id="${t.id}" type="button"><span class="track-number">${String(i + 1).padStart(2,'0')}</span><span class="track-mark">${t.album.slice(0,2).toUpperCase()}</span><span class="track-main"><strong>${t.title}</strong><small>${t.album}</small></span><span class="track-year">${t.year}</span><span class="track-arrow">↗</span></button>`).join('');
+      document.querySelectorAll('.track-card').forEach(card => card.addEventListener('click', () => selectTrack(Number(card.dataset.id))));
+      if (window.ScrollTrigger) { ScrollTrigger.refresh(); gsap.fromTo('.track-card', {opacity:0, y:18}, {opacity:1, y:0, duration:.55, stagger:.025, ease:'power2.out', overwrite:true}); }
+    }
+    function selectTrack(id) { state.index = id; state.progress = 0; state.playing = false; clearInterval(state.timer); updateNow(); paintCatalog(); animateNeedle(); setTimeout(() => playTrack(), 720); }
+    function updateNow() { const t = tracks[state.index]; $('#nowAlbum').textContent = `${t.album.toUpperCase()} / ${t.year}`; $('#nowTitle').textContent = t.title; $('#nowArtist').textContent = 'Lana Del Rey'; $('#nowArt').textContent = t.album.split(' ').map(x=>x[0]).join('').slice(0,3).toUpperCase(); $('#streamLink').href = `https://open.spotify.com/search/${encodeURIComponent(`${t.title} Lana Del Rey`)}`; $('#stageStatus').textContent = state.playing ? 'PLAYING' : 'LOADED'; $('#nowState').textContent = state.playing ? 'PLAYING' : 'READY'; $('#pulseDot').classList.toggle('on', state.playing); $('#record').classList.toggle('playing', state.playing); $('#playButton').textContent = state.playing ? 'Ⅱ' : '▶'; $('#playButton').setAttribute('aria-label', state.playing ? 'Pause selected song' : 'Play selected song'); $('#progress').value = Math.round(state.progress * 100); $('#elapsed').textContent = formatTime(state.progress * 228); document.title = `${t.title} — Paradise Motel`; }
+    function formatTime(seconds) { const mins = Math.floor(seconds / 60); const secs = Math.floor(seconds % 60).toString().padStart(2, '0'); return `${mins}:${secs}`; }
+    function animateNeedle() { const f = $('#discFlight'); gsap.killTweensOf(f); gsap.set(f,{opacity:1,x:0,y:0,scale:1}); gsap.timeline().to(f,{x:36,y:36,scale:.85,duration:.4,ease:'power2.in'}).to(f,{x:0,y:124,scale:.24,duration:.8,ease:'power3.inOut'}).to(f,{opacity:0,duration:.16}).fromTo('#record',{y:-15,scale:.9,opacity:.65},{y:0,scale:1,opacity:1,duration:.4,ease:'power2.out'},'-=.1'); gsap.to('#needleArm',{rotation:18,duration:.8,delay:.7,ease:'power2.inOut'}); }
+    function playTrack() { state.playing = true; clearInterval(state.timer); updateNow(); state.timer = setInterval(() => { state.progress += .004; if(state.progress >= 1){ state.progress=0; nextTrack(); } else updateNow(); }, 1000); }
+    function pauseTrack() { state.playing = !state.playing; if(state.playing) playTrack(); else {clearInterval(state.timer); updateNow();} }
+    function nextTrack() { const visible = filteredTracks(); const pos = visible.findIndex(t => t.id === state.index); selectTrack(visible[(pos + 1) % visible.length].id); }
+    function prevTrack() { const visible = filteredTracks(); const pos = visible.findIndex(t => t.id === state.index); selectTrack(visible[(pos - 1 + visible.length) % visible.length].id); }
+
+    document.addEventListener('click', e => { const b = e.target.closest('[data-filter]'); if(!b) return; state.filter = b.dataset.filter; document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active', x === b)); paintCatalog(); });
+    $('#scrollCue').addEventListener('click', () => $('#shelves').scrollIntoView({behavior:'smooth'}));
+    $('#aboutButton').addEventListener('click', () => $('#aboutModal').showModal()); $('#closeModal').addEventListener('click', () => $('#aboutModal').close());
+    $('#playButton').addEventListener('click', pauseTrack); $('#prevButton').addEventListener('click', prevTrack); $('#nextButton').addEventListener('click', nextTrack);
+    $('#progress').addEventListener('input', e => { state.progress = Number(e.target.value) / 100; updateNow(); });
+    $('#volume').addEventListener('input', e => { state.volume = Number(e.target.value); $('#volumeReadout').textContent = state.volume; });
+    document.addEventListener('keydown', e => { if(e.target.matches('input,textarea')) return; if(e.code==='Space'){e.preventDefault(); pauseTrack();} if(e.code==='ArrowRight') nextTrack(); if(e.code==='ArrowLeft') prevTrack(); });
+    let stageClicks = 0; $('.player-stage').addEventListener('click', () => { stageClicks++; if(stageClicks > 1) pauseTrack(); setTimeout(()=>stageClicks=0,400); });
+
+    paintCatalog(); updateNow();
+    window.addEventListener('load', () => { if(window.gsap && window.ScrollTrigger){ gsap.registerPlugin(ScrollTrigger); gsap.from('.hero-copy',{opacity:0,y:30,duration:1,delay:.15,ease:'power3.out'}); gsap.from('.player-stage',{opacity:0,scale:.93,duration:1.2,delay:.3,ease:'power3.out'}); gsap.to('.orb-a',{x:70,y:30,duration:8,repeat:-1,yoyo:true,ease:'sine.inOut'}); gsap.to('.orb-b',{x:-50,y:-20,duration:10,repeat:-1,yoyo:true,ease:'sine.inOut'}); gsap.utils.toArray('.reveal-up').forEach(el => gsap.from(el,{opacity:0,y:35,duration:.8,scrollTrigger:{trigger:el,start:'top 86%',toggleActions:'play none none reverse'}})); gsap.to('.player-stage',{yPercent:-8,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}}); } });
+  </script>
+</body>
+</html>
