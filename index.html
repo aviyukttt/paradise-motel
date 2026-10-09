@@ -55,7 +55,7 @@
         <div class="now-meta"><span class="tiny-label" id="nowAlbum">PARADISE MOTEL</span><h2 id="nowTitle">The needle is waiting.</h2><p id="nowArtist">Select a record below to begin</p><a class="stream-link" id="streamLink" href="https://open.spotify.com/search/Lana%20Del%20Rey" target="_blank" rel="noreferrer">OPEN OFFICIAL STREAM ↗</a></div>
         <div class="now-state"><span class="pulse-dot" id="pulseDot"></span><span id="nowState">READY</span></div>
         <div class="playback-panel">
-          <div class="progress-row"><span id="elapsed">0:00</span><input id="progress" type="range" min="0" max="100" value="0" aria-label="Seek within selected song" /><span>3:48</span></div>
+          <canvas class="equalizer" id="equalizer" width="320" height="46" aria-label="Live equalizer visualizer"></canvas><div class="audio-note" id="audioNote">SELECT A TRACK TO OPEN THE OFFICIAL STREAM</div><div class="progress-row"><span id="elapsed">0:00</span><input id="progress" type="range" min="0" max="100" value="0" aria-label="Seek within selected song" /><span>3:48</span></div>
           <div class="transport-row"><button id="prevButton" class="transport" type="button" aria-label="Previous song">◀◀</button><button id="playButton" class="play-button" type="button" aria-label="Play selected song">▶</button><button id="nextButton" class="transport" type="button" aria-label="Next song">▶▶</button><label class="volume-control" for="volume">VOL <input id="volume" type="range" min="0" max="100" value="72" aria-label="Volume" /></label></div>
         </div>
       </aside>
@@ -87,7 +87,7 @@
       ['The Grants','Did you know that there’s a tunnel under Ocean Blvd','2023','01'],['Did you know that there’s a tunnel under Ocean Blvd','Did you know that there’s a tunnel under Ocean Blvd','2023','02'],['Sweet','Did you know that there’s a tunnel under Ocean Blvd','2023','03'],['A&W','Did you know that there’s a tunnel under Ocean Blvd','2023','04'],['Judah Smith Interlude','Did you know that there’s a tunnel under Ocean Blvd','2023','05'],['Candy Necklace','Did you know that there’s a tunnel under Ocean Blvd','2023','06'],['Jon Batiste Interlude','Did you know that there’s a tunnel under Ocean Blvd','2023','07'],['Kintsugi','Did you know that there’s a tunnel under Ocean Blvd','2023','08'],['Fingertips','Did you know that there’s a tunnel under Ocean Blvd','2023','09'],['Paris, Texas','Did you know that there’s a tunnel under Ocean Blvd','2023','10'],['Grandfather please stand on the shoulders of my father while he’s deep-sea fishing','Did you know that there’s a tunnel under Ocean Blvd','2023','11'],['Let The Light In','Did you know that there’s a tunnel under Ocean Blvd','2023','12'],['Margaret','Did you know that there’s a tunnel under Ocean Blvd','2023','13'],['Fishtail','Did you know that there’s a tunnel under Ocean Blvd','2023','14'],['Peppers','Did you know that there’s a tunnel under Ocean Blvd','2023','15'],['Taco Truck x VB','Did you know that there’s a tunnel under Ocean Blvd','2023','16']
     ].map((t, i) => ({title:t[0], album:t[1], year:t[2], no:t[3], id:i}));
 
-    const state = { index: 0, playing: false, progress: 0, volume: 72, timer: null, filter: 'All' };
+    const state = { index: 0, playing: false, progress: 0, volume: 72, timer: null, filter: 'All', audio: null, raf: null, streamOpened: false };
     const $ = s => document.querySelector(s);
     const filters = [...new Set(tracks.map(t => t.album))];
     $('#allCount').textContent = tracks.length;
@@ -100,12 +100,26 @@
       document.querySelectorAll('.track-card').forEach(card => card.addEventListener('click', () => selectTrack(Number(card.dataset.id))));
       if (window.ScrollTrigger) { ScrollTrigger.refresh(); gsap.fromTo('.track-card', {opacity:0, y:18}, {opacity:1, y:0, duration:.55, stagger:.025, ease:'power2.out', overwrite:true}); }
     }
-    function selectTrack(id) { state.index = id; state.progress = 0; state.playing = false; clearInterval(state.timer); updateNow(); paintCatalog(); animateNeedle(); setTimeout(() => playTrack(), 720); }
-    function updateNow() { const t = tracks[state.index]; $('#nowAlbum').textContent = `${t.album.toUpperCase()} / ${t.year}`; $('#nowTitle').textContent = t.title; $('#nowArtist').textContent = 'Lana Del Rey'; $('#nowArt').textContent = t.album.split(' ').map(x=>x[0]).join('').slice(0,3).toUpperCase(); $('#streamLink').href = `https://open.spotify.com/search/${encodeURIComponent(`${t.title} Lana Del Rey`)}`; $('#stageStatus').textContent = state.playing ? 'PLAYING' : 'LOADED'; $('#nowState').textContent = state.playing ? 'PLAYING' : 'READY'; $('#pulseDot').classList.toggle('on', state.playing); $('#record').classList.toggle('playing', state.playing); $('#playButton').textContent = state.playing ? 'Ⅱ' : '▶'; $('#playButton').setAttribute('aria-label', state.playing ? 'Pause selected song' : 'Play selected song'); $('#progress').value = Math.round(state.progress * 100); $('#elapsed').textContent = formatTime(state.progress * 228); document.title = `${t.title} — Paradise Motel`; }
+    function selectTrack(id) { stopScratch(); state.index = id; state.progress = 0; state.playing = false; clearInterval(state.timer); updateNow(); paintCatalog(); animateNeedle(); }
+    function updateNow() { const t = tracks[state.index]; $('#nowAlbum').textContent = `${t.album.toUpperCase()} / ${t.year}`; $('#nowTitle').textContent = t.title; $('#nowArtist').textContent = 'Lana Del Rey'; $('#nowArt').textContent = t.album.split(' ').map(x=>x[0]).join('').slice(0,3).toUpperCase(); $('#streamLink').href = `https://open.spotify.com/search/${encodeURIComponent(`${t.title} Lana Del Rey`)}`; $('#stageStatus').textContent = state.playing ? 'PLAYING' : 'LOADED'; $('#nowState').textContent = state.playing ? 'SCRATCH PREVIEW' : 'READY'; $('#audioNote').textContent = state.playing ? 'SCRATCH PREVIEW · OPEN THE OFFICIAL STREAM FOR MUSIC' : 'SELECT PLAY TO HEAR THE VINYL SCRATCH'; $('#pulseDot').classList.toggle('on', state.playing); $('#record').classList.toggle('playing', state.playing); $('#playButton').textContent = state.playing ? 'Ⅱ' : '▶'; $('#playButton').setAttribute('aria-label', state.playing ? 'Pause selected song' : 'Play selected song'); $('#progress').value = Math.round(state.progress * 100); $('#elapsed').textContent = formatTime(state.progress * 228); document.title = `${t.title} — Paradise Motel`; }
     function formatTime(seconds) { const mins = Math.floor(seconds / 60); const secs = Math.floor(seconds % 60).toString().padStart(2, '0'); return `${mins}:${secs}`; }
     function animateNeedle() { const f = $('#discFlight'); gsap.killTweensOf(f); gsap.set(f,{opacity:1,x:0,y:0,scale:1}); gsap.timeline().to(f,{x:36,y:36,scale:.85,duration:.4,ease:'power2.in'}).to(f,{x:0,y:124,scale:.24,duration:.8,ease:'power3.inOut'}).to(f,{opacity:0,duration:.16}).fromTo('#record',{y:-15,scale:.9,opacity:.65},{y:0,scale:1,opacity:1,duration:.4,ease:'power2.out'},'-=.1'); gsap.to('#needleArm',{rotation:18,duration:.8,delay:.7,ease:'power2.inOut'}); }
-    function playTrack() { state.playing = true; clearInterval(state.timer); updateNow(); state.timer = setInterval(() => { state.progress += .004; if(state.progress >= 1){ state.progress=0; nextTrack(); } else updateNow(); }, 1000); }
-    function pauseTrack() { state.playing = !state.playing; if(state.playing) playTrack(); else {clearInterval(state.timer); updateNow();} }
+    function startScratch() {
+      if (state.audio) return;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext; if (!AudioCtx) return;
+      const ctx = new AudioCtx(); const analyser = ctx.createAnalyser(); analyser.fftSize = 64; analyser.smoothingTimeConstant = .72;
+      const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate); const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (Math.random() > .985 ? .8 : .08);
+      const source = ctx.createBufferSource(); source.buffer = buffer; source.loop = true;
+      const filter = ctx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1900; filter.Q.value = .7;
+      const gain = ctx.createGain(); gain.gain.value = Math.max(.015, state.volume / 1000);
+      source.connect(filter).connect(gain).connect(analyser).connect(ctx.destination); source.start(); state.audio = {ctx, source, gain, analyser};
+      drawEqualizer();
+    }
+    function stopScratch() { if (!state.audio) return; state.audio.source.stop(); state.audio.ctx.close(); state.audio = null; cancelAnimationFrame(state.raf); drawEqualizer(true); }
+    function drawEqualizer(idle = false) { const canvas = $('#equalizer'); if (!canvas) return; const c = canvas.getContext('2d'), w = canvas.width, h = canvas.height; c.clearRect(0,0,w,h); c.fillStyle = 'rgba(242,231,214,.08)'; c.fillRect(0,h-1,w,1); const bars = 32; let values = state.audio ? new Uint8Array(state.audio.analyser.frequencyBinCount) : null; if(values) state.audio.analyser.getByteFrequencyData(values); for(let i=0;i<bars;i++){ const v = idle ? 2 : Math.max(3, (values[i % values.length] || 0) * .42); c.fillStyle = i % 5 === 0 ? '#eb8178' : 'rgba(211,163,110,.75)'; c.fillRect(i * (w / bars) + 1, h - v, Math.max(2,w / bars - 4), v); } if(!idle && state.playing) state.raf = requestAnimationFrame(() => drawEqualizer(false)); }
+    function playTrack(fromUser = false) { state.playing = true; startScratch(); if(fromUser && !state.streamOpened) { window.open($('#streamLink').href, '_blank', 'noopener'); state.streamOpened = true; } clearInterval(state.timer); updateNow(); state.timer = setInterval(() => { state.progress += .004; if(state.progress >= 1){ state.progress=0; nextTrack(); } else updateNow(); }, 1000); }
+    function pauseTrack() { if(state.playing){ state.playing = false; stopScratch(); clearInterval(state.timer); updateNow(); } else playTrack(true); }
     function nextTrack() { const visible = filteredTracks(); const pos = visible.findIndex(t => t.id === state.index); selectTrack(visible[(pos + 1) % visible.length].id); }
     function prevTrack() { const visible = filteredTracks(); const pos = visible.findIndex(t => t.id === state.index); selectTrack(visible[(pos - 1 + visible.length) % visible.length].id); }
 
@@ -114,11 +128,11 @@
     $('#aboutButton').addEventListener('click', () => $('#aboutModal').showModal()); $('#closeModal').addEventListener('click', () => $('#aboutModal').close());
     $('#playButton').addEventListener('click', pauseTrack); $('#prevButton').addEventListener('click', prevTrack); $('#nextButton').addEventListener('click', nextTrack);
     $('#progress').addEventListener('input', e => { state.progress = Number(e.target.value) / 100; updateNow(); });
-    $('#volume').addEventListener('input', e => { state.volume = Number(e.target.value); $('#volumeReadout').textContent = state.volume; });
+    $('#volume').addEventListener('input', e => { state.volume = Number(e.target.value); $('#volumeReadout').textContent = state.volume; if(state.audio) state.audio.gain.gain.value = Math.max(.015, state.volume / 1000); });
     document.addEventListener('keydown', e => { if(e.target.matches('input,textarea')) return; if(e.code==='Space'){e.preventDefault(); pauseTrack();} if(e.code==='ArrowRight') nextTrack(); if(e.code==='ArrowLeft') prevTrack(); });
     let stageClicks = 0; $('.player-stage').addEventListener('click', () => { stageClicks++; if(stageClicks > 1) pauseTrack(); setTimeout(()=>stageClicks=0,400); });
 
-    paintCatalog(); updateNow();
+    paintCatalog(); updateNow(); drawEqualizer(true);
     window.addEventListener('load', () => { if(window.gsap && window.ScrollTrigger){ gsap.registerPlugin(ScrollTrigger); gsap.from('.hero-copy',{opacity:0,y:30,duration:1,delay:.15,ease:'power3.out'}); gsap.from('.player-stage',{opacity:0,scale:.93,duration:1.2,delay:.3,ease:'power3.out'}); gsap.to('.orb-a',{x:70,y:30,duration:8,repeat:-1,yoyo:true,ease:'sine.inOut'}); gsap.to('.orb-b',{x:-50,y:-20,duration:10,repeat:-1,yoyo:true,ease:'sine.inOut'}); gsap.utils.toArray('.reveal-up').forEach(el => gsap.from(el,{opacity:0,y:35,duration:.8,scrollTrigger:{trigger:el,start:'top 86%',toggleActions:'play none none reverse'}})); gsap.to('.player-stage',{yPercent:-8,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}}); } });
   </script>
 </body>
